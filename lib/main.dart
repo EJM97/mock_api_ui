@@ -1,12 +1,14 @@
 // import 'dart:async';
 
 import 'package:flutter/material.dart';
-
-import 'users_page.dart';
+// import 'package:flutter/rendering.dart';
+import 'navigation_page.dart';
 
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 void main() {
+  // debugPaintSizeEnabled = true;
+
   runApp(const MyApp());
 }
 
@@ -19,6 +21,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'UI for API',
       theme: ThemeData(
+        dividerColor: Colors.transparent,
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.deepPurple,
           // secondary: Colors.red,
@@ -27,7 +30,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // home: const MapSample(),
-      home: const UsersPage(),
+      home: const NavigationPage(),
     );
   }
 }

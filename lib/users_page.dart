@@ -30,30 +30,31 @@ class _UsersPageState extends State<UsersPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Users Page',
-          ),
+      appBar: AppBar(
+        title: const Text(
+          'Users Page',
         ),
-        body: FutureBuilder(
-          future: fetchUsers(),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-                return const Text('none');
-              case ConnectionState.waiting:
-                return const Center(child: CircularProgressIndicator());
-              case ConnectionState.active:
-                return const Text('active');
-              case ConnectionState.done:
-                if (snapshot.hasError) {
-                  return Text('${snapshot.error}');
-                } else {
-                  return usersView();
-                }
-            }
-          },
-        ));
+      ),
+      body: FutureBuilder(
+        future: fetchUsers(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              return const Text('none');
+            case ConnectionState.waiting:
+              return const Center(child: CircularProgressIndicator());
+            case ConnectionState.active:
+              return const Text('active');
+            case ConnectionState.done:
+              if (snapshot.hasError) {
+                return Text('${snapshot.error}');
+              } else {
+                return usersView();
+              }
+          }
+        },
+      ),
+    );
   }
 
   ListView usersView() {
@@ -149,8 +150,8 @@ class _UsersPageState extends State<UsersPage> {
   Future<void> _launchUrl(url, type) async {
     Uri uri;
     if (type.toLowerCase() == "web") {
-      uri = Uri.parse(
-          "https://www.gzaas.com/preview/preview?gs_form=%22$url%22");
+      uri =
+          Uri.parse("https://www.gzaas.com/preview/preview?gs_form=%22$url%22");
     } else if (type.toLowerCase() == "phone") {
       uri = Uri.parse("tel:$url");
     } else if (type.toLowerCase() == "email") {
