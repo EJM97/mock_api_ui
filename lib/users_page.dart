@@ -29,31 +29,24 @@ class _UsersPageState extends State<UsersPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Users Page',
-        ),
-      ),
-      body: FutureBuilder(
-        future: fetchUsers(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-              return const Text('none');
-            case ConnectionState.waiting:
-              return const Center(child: CircularProgressIndicator());
-            case ConnectionState.active:
-              return const Text('active');
-            case ConnectionState.done:
-              if (snapshot.hasError) {
-                return Text('${snapshot.error}');
-              } else {
-                return usersView();
-              }
-          }
-        },
-      ),
+    return FutureBuilder(
+      future: fetchUsers(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+            return const Text('none');
+          case ConnectionState.waiting:
+            return const Center(child: CircularProgressIndicator());
+          case ConnectionState.active:
+            return const Text('active');
+          case ConnectionState.done:
+            if (snapshot.hasError) {
+              return Text('${snapshot.error}');
+            } else {
+              return usersView();
+            }
+        }
+      },
     );
   }
 

@@ -5,6 +5,7 @@ import 'post.dart';
 import 'package:http/http.dart' as http;
 
 import 'comments_page.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class PostPage extends StatefulWidget {
   const PostPage({super.key});
@@ -14,7 +15,10 @@ class PostPage extends StatefulWidget {
 }
 
 class _PostPageState extends State<PostPage> {
+  // changes in posts have to be reflected in the UI
+
   List<Post> posts = [];
+
   Future<void> fetchPost() async {
     String apiAddress = 'https://jsonplaceholder.typicode.com/posts/';
     final response = await http.get(Uri.parse(apiAddress));
@@ -22,6 +26,15 @@ class _PostPageState extends State<PostPage> {
       // Successful response, parse the data
       List<dynamic> apiResponse = json.decode(response.body);
       posts = apiResponse.map((item) => Post.fromJson(item)).toList();
+      Map userNameMap = {}; // memoize to reduce api calls for same user
+      for (var post in posts) {
+        if (userNameMap.keys.contains(post.userId)) {
+          post.userName = userNameMap[post.userId];
+        } else {
+          await post.fetchUserName();
+          userNameMap[post.userId] = post.userName;
+        }
+      }
     } else {
       // Error in response, print the error
       print("Error Status Code = ${response.statusCode}");
@@ -30,31 +43,24 @@ class _PostPageState extends State<PostPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Posts Page',
-        ),
-      ),
-      body: FutureBuilder(
-        future: fetchPost(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-              return const Text('none');
-            case ConnectionState.waiting:
-              return const Center(child: CircularProgressIndicator());
-            case ConnectionState.active:
-              return const Text('active');
-            case ConnectionState.done:
-              if (snapshot.hasError) {
-                return Text('${snapshot.error}');
-              } else {
-                return postView();
-              }
-          }
-        },
-      ),
+    return FutureBuilder(
+      future: fetchPost(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+            return const Text('none');
+          case ConnectionState.waiting:
+            return const Center(child: CircularProgressIndicator());
+          case ConnectionState.active:
+            return const Text('active');
+          case ConnectionState.done:
+            if (snapshot.hasError) {
+              return Text('${snapshot.error}');
+            } else {
+              return postView();
+            }
+        }
+      },
     );
   }
 
@@ -87,7 +93,7 @@ class PostCard extends StatelessWidget {
             color: const Color.fromARGB(255, 26, 2, 68),
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text(
-                'User: ${post.userId}',
+                'Posted by: ${post.userName}',
                 style: const TextStyle(
                   fontSize: 16,
                   color: Colors.white,
@@ -115,12 +121,17 @@ class PostCard extends StatelessWidget {
               ),
             ]),
           ),
-          Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            IconButton(
-              onPressed: () => _showCommentSheet(context),
-              icon: const Icon(Icons.comment),
-            ),
-          ]),
+          Container(
+            decoration: const BoxDecoration(color: Colors.white),
+            child:
+                Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+              IconButton(
+                onPressed: () => _showCommentSheet(context),
+                icon: const Icon(FontAwesomeIcons.comment),
+              ),
+              const Text("Comments"),
+            ]),
+          ),
         ],
       ),
     );

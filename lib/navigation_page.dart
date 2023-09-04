@@ -26,8 +26,8 @@ class _NavigationPageState extends State<NavigationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          // title: Text("Nth Page"),
-          ),
+        title: Text(_selectedIndex == 0 ? "Posts Page" : "Users Page"),
+      ),
       drawer: Drawer(
         child: ListView(
           children: <Widget>[

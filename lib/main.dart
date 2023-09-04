@@ -24,8 +24,6 @@ class MyApp extends StatelessWidget {
         dividerColor: Colors.transparent,
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.deepPurple,
-          // secondary: Colors.red,
-          // primary: Colors.blue
         ),
         useMaterial3: true,
       ),
